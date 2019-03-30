@@ -1,3 +1,15 @@
+anonsurf (2.9+parrot3) testing; urgency=medium
+
+  * Make dialog box wider than it is tall.
+    + So that you can break the text using only two lines.
+    + https://github.com/ParrotSec/anonsurf/pull/4
+  * Manually set wicth for dialog box
+    + This way text will remain aligned left and,
+    + differently than when option `--ellipsize` is used, not centered.
+    + https://github.com/ParrotSec/anonsurf/pull/4
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sat, 30 Mar 2019 15:32:55 +0100
+
 anonsurf (2.9+parrot2) testing; urgency=medium
 
   * Make sbin binary paths absolute.
