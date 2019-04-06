@@ -257,9 +257,6 @@ case "$1" in
 	myip|ip)
 		ip
 	;;
-	mac|mymac)
-		mac
-	;;
 	restart)
 		$0 stop
 		sleep 1
@@ -267,7 +264,7 @@ case "$1" in
 	;;
    *)
 echo -e "
-Parrot AnonSurf Module (v 2.9)
+Parrot AnonSurf Module (v 2.9.1)
 	Developed by Lorenzo \"Palinuro\" Faletra <palinuro@parrotsec.org>
 		     Lisetta \"Sheireen\" Ferrero <sheireen@parrotsec.org>
 		     Francesco \"Mibofra\" Bonanno <mibofra@parrotsec.org>
@@ -284,7 +281,6 @@ Parrot AnonSurf Module (v 2.9)
 	$RED changeid$BLUE -$GREEN Restart TOR to change identity
 	$RED status$BLUE -$GREEN Check if AnonSurf is working properly
 	$RED myip$BLUE -$GREEN Check your ip and verify your tor connection
-	$RED mymac$BLUE -$GREEN Check your mac and verify your change mac address
 $RESETCOLOR
 Dance like no one's watching. Encrypt like everyone is.
 " >&2
