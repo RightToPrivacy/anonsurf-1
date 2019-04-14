@@ -243,7 +243,7 @@ function dnsstart {
     rm /etc/resolv.conf
     ln -s /etc/resolvconf/run/resolv.conf /etc/resolv.conf
     cat /etc/anonsurf/resolv.conf.opennic > /etc/resolvconf/resolv.conf.d/tail
-    /usr/bin/service resolvconf restart
+    /usr/sbin/service resolvconf restart
     touch /etc/anonsurf/opennic.lock
     echo "done"
     notify "done"
@@ -255,7 +255,7 @@ function dnsstop {
     rm /etc/resolv.conf
     ln -s /etc/resolvconf/run/resolv.conf /etc/resolv.conf
     echo > /etc/resolvconf/resolv.conf.d/tail
-    /usr/bin/service resolvconf restart
+    /usr/sbin/service resolvconf restart
     rm /etc/anonsurf/opennic.lock
     echo "done"
     notify "done"
@@ -264,13 +264,9 @@ function dnsstop {
 function dns {
     if [ -f /etc/anonsurf/opennic.lock ]; then
         dnsstop
-	fi
-	elif [ ! -f /etc/anonsurf/opennic.lock ]; then
+    elif [ ! -f /etc/anonsurf/opennic.lock ]; then
         dnsstart
-	fi
-	else; then
-	    dnsstart
-	fi
+    fi
 }
 
 
