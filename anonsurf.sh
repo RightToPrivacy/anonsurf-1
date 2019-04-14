@@ -237,6 +237,42 @@ function status {
 	cat /tmp/anonsurf-tor.log || cat /var/log/tor/log
 }
 
+function dnsstart {
+    echo "Configuring OpenNIC DNS service"
+    notify "Configuring OpenNIC DNS service"
+    rm /etc/resolv.conf
+    ln -s /etc/resolvconf/run/resolv.conf /etc/resolv.conf
+    cat /etc/anonsurf/resolv.conf.opennic > /etc/resolvconf/resolv.conf.d/tail
+    /usr/bin/service resolvconf restart
+    touch /etc/anonsurf/opennic.lock
+    echo "done"
+    notify "done"
+}
+
+function dnsstop {
+    echo "Deconfiguring OpenNIC DNS service"
+    notify "Deconfiguring OpenNIC DNS service"
+    rm /etc/resolv.conf
+    ln -s /etc/resolvconf/run/resolv.conf /etc/resolv.conf
+    echo > /etc/resolvconf/resolv.conf.d/tail
+    /usr/bin/service resolvconf restart
+    rm /etc/anonsurf/opennic.lock
+    echo "done"
+    notify "done"
+}
+
+function dns {
+    if [ -f /etc/anonsurf/opennic.lock ]; then
+        dnsstop
+	fi
+	elif [ ! -f /etc/anonsurf/opennic.lock ]; then
+        dnsstart
+	fi
+	else; then
+	    dnsstart
+	fi
+}
+
 
 
 case "$1" in
@@ -257,6 +293,9 @@ case "$1" in
 	myip|ip)
 		ip
 	;;
+	dns)
+	    dns
+	;;
 	restart)
 		$0 stop
 		sleep 1
@@ -264,7 +303,7 @@ case "$1" in
 	;;
    *)
 echo -e "
-Parrot AnonSurf Module (v 2.9.1)
+Parrot AnonSurf Module (v 2.10)
 	Developed by Lorenzo \"Palinuro\" Faletra <palinuro@parrotsec.org>
 		     Lisetta \"Sheireen\" Ferrero <sheireen@parrotsec.org>
 		     Francesco \"Mibofra\" Bonanno <mibofra@parrotsec.org>
@@ -281,6 +320,7 @@ Parrot AnonSurf Module (v 2.9.1)
 	$RED changeid$BLUE -$GREEN Restart TOR to change identity
 	$RED status$BLUE -$GREEN Check if AnonSurf is working properly
 	$RED myip$BLUE -$GREEN Check your ip and verify your tor connection
+	$RED dns$BLUE -$GREEN Replace your DNS with the OpenNIC DNS servers.
 $RESETCOLOR
 Dance like no one's watching. Encrypt like everyone is.
 " >&2

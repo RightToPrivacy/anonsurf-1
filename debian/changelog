@@ -1,3 +1,9 @@
+anonsurf (2.10+parrot1) testing; urgency=medium
+
+  * Add OpenNIC DNS feature.
+
+ -- Lorenzo "Palinuro" Faletra <palinuro@parrotsec.org>  Sun, 14 Apr 2019 05:51:18 +0200
+
 anonsurf (2.9.1+parrot1) testing; urgency=medium
 
   * Remove macchanger residual code.
