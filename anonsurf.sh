@@ -241,8 +241,8 @@ function dnsstart {
     echo "Configuring OpenNIC DNS service"
     notify "Configuring OpenNIC DNS service"
     rm /etc/resolv.conf
-    ln -s /etc/resolvconf/run/resolv.conf /etc/resolv.conf
     cat /etc/anonsurf/resolv.conf.opennic > /etc/resolvconf/resolv.conf.d/tail
+    cat /etc/anonsurf/resolv.conf.opennic > /etc/resolv.conf
     /usr/sbin/service resolvconf restart
     touch /etc/anonsurf/opennic.lock
     echo "done"
