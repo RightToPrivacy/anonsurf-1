@@ -11,7 +11,9 @@ install:
 	cp onion.pac $(DESTDIR)/etc/anonsurf/onion.pac
 	ln -s /etc/anonsurf/onion.pac $(DESTDIR)/etc/tor/onion.pac
 	cp torrc $(DESTDIR)/etc/anonsurf/torrc
-	cp anonsurf.sh $(DESTDIR)/usr/bin/anonsurf
+	cp anonsurf $(DESTDIR)/usr/bin/anonsurf
+	cp OUI.final $(DESTDIR)/root
+	cp anonsurf.service $(DESTDIR)/etc/systemd/system/anonsurf.service
 	cp exitnode-selector $(DESTDIR)/usr/bin/exitnode-selector
 	cp exitnodes.csv $(DESTDIR)/etc/anonsurf/exitnodes.csv
 	cp resolv.conf.opennic $(DESTDIR)/etc/anonsurf/resolv.conf.opennic
