@@ -16,7 +16,7 @@ Anonsurf install as command: simply follow run make and skip the rest of below
 Add as systemd service (keep anonsurf w/optional mac changing/hostname changing running all the time): 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-1.) move OUI.final file to /root/OUI.final (or wherever you set $oui_file variable to)
+1.) move OUI.final file to /root/OUI.final (or wherever you set $oui_file variable to; /root/OUI.final is default so no need to               change it unless you want to)
 
 2.) move macpriv to /usr/bin/macpriv and chmod +x macpriv
 
@@ -45,3 +45,7 @@ As mentioned, this package alone lets you run anonsurf as simply a command just 
 all systemctl commands. If you need help email me below:
 
 Contact: righttoprivacy@tutanota.com or @righttoprivacy on the Parrot Forums
+
+For more information see the tutorial post on Parrot Forums:
+
+https://community.parrotlinux.org/t/tutorial-anonsurf-systemd-service-mac-options/11055
