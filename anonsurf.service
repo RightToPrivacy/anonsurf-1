@@ -1,0 +1,15 @@
+# Contents of /etc/systemd/system/anonsurf.service
+[Unit]
+Description=Parrot Linux AnonSurf
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/anonsurf start
+ExecReload=/usr/bin/anonsurf restart
+ExecStop=/usr/bin/anonsurf stop
+RemainAfterExit=True
+
+
+[Install]
+WantedBy=multi-user.target
