@@ -18,7 +18,7 @@
 # Extended:
 # Daniel 'Sawyer' Garcia <dagaba13@gmail.com>
 #
-# 					<righttoprivacy@tutanota.com>
+# Optional MAC address/hostname changing stuff <righttoprivacy@tutanota.com>
 #
 # anonsurf is free software: you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -324,7 +324,7 @@ Parrot AnonSurf Module (v 2.10)
 		     Francesco \"Mibofra\" Bonanno <mibofra@parrotsec.org>
 		and a huge amount of Caffeine + some GNU/GPL v3 stuff
 	Extended by Daniel \"Sawyer\" Garcia <dagaba13@gmail.com>
-								<righttoprivacy@tutanota.com>
+					mac/hostname stuff <righttoprivacy@tutanota.com>
 
 	Usage:
 	$RED┌──[$GREEN$USER$YELLOW@$BLUE`hostname`$RED]─[$GREEN$PWD$RED]
