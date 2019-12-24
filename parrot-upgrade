@@ -1,0 +1,21 @@
+#!/bin/bash
+echo "Turning off anonsurf.service to speed up download process"
+echo "and saving tor server bandwidth/increase upgrade safety;"
+echo 'Keep in mind you will be off tor/anonsurf during upgrade'
+systemctl stop anonsurf.service
+sleep .5
+echo '----------------------------------------------------------------------------'
+set -e
+DEBIAN_FRONTEND="noninteractive"
+DEBIAN_PRIORITY="critical"
+DEBCONF_NOWARNINGS="yes"
+export DEBIAN_FRONTEND DEBIAN_PRIORITY DEBCONF_NOWARNINGS
+apt update || echo failed to update index lists
+dpkg --configure -a || echo failed to fix interrupted upgrades
+apt --fix-broken --fix-missing install || echo failed to fix conflicts
+apt -y --allow-downgrades --fix-broken --fix-missing dist-upgrade
+echo "Upgrade is finished. Starting anonsurf.service again for you"
+systemctl start anonsurf.service
+echo '----------------------------------------------------------------------------'
+sleep 1
+echo "Anonsurf service is now running again."
