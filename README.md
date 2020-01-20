@@ -1,7 +1,9 @@
 Parrot Linux Anonsurf fork finished by righttoprivacy@tutanota.com
 -------------------------------------------------------------------
+HOWTO: To install & enable everything (patching your current Anonsurf with this version's features: replaces your current /usr/bin/anonsurf, installs macpriv) (hostname/mac address privacy feature random cycling), installs as systemd service (starts anonsurf systemd/enables at boot):
+If you want the above to happen just type: make install
 
-This version of Anonsurf has added option to enable random mac changing at randomly continually changing time intervals.
+make install replaces your current /usr/bin/anonsurf (assuming you have it), installs the OUI files/hostname/mac address randomization scripts default enabled/starting as systemd service in background/at boot.
 
 Disable/Enable randomly changing mac addresses at random continuously changing time intervals:
 
