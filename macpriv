@@ -22,7 +22,7 @@ export RESETCOLOR='\033[1;00m'
 hightime=1200  			# highest number for timing randomizer (higher the number longer potential change
 lowtime=600    			# lowest number (lower the number, lower potential time changed)
 wifi=wlan0
-oui_file=/root/OUI.final	# full path to OUI.final file here required for valid mac randomization generation
+oui_file=/usr/share/anonsurf/OUI.final	# full path to OUI.final file here required for valid mac randomization generation
 
 while :
 do
