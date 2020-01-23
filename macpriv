@@ -1,7 +1,11 @@
 #!/bin/bash
 # Part of righttoprivacy@tutanota.com's Parrot AnonSurf fork:
 # download: https://github.com/RightToPrivacy/anonsurf-1
-
+# 
+# ***IMPORTANT REQUIRED FOR USE: move OUI.final to /usr/share/maccleaner 
+# (or change variable to location of OUI.final)
+# README for more info
+#
 # runs great on any Linux system;
 # In Anonsurf fork changing $MAC_CHANGING var to 'yes' in anonsurf script
 # enables this script;
@@ -13,15 +17,31 @@
 # Randomized mac addresses at randomized continually changing times to protect 
 # against mac fingerprint/mac change changes hostname to randomized name each 
 # mac change (logged by routers/networks) to prevent timing pattern analysis and 
-# tor browser exploits known to target mac addresses/hostname (javascript)
+# browser exploits known to target mac addresses/hostname 
 
 export BLUE='\033[1;94m'
 export RED='\033[1;91m'
 export RESETCOLOR='\033[1;00m'
 
+hostn() {
+	array[0]="localhost" 
+	array[1]="laptop" 
+	array[2]="computer" 
+	array[3]="DESKTOP" 
+	array[4]="Apple" 
+	array[5]="PC" 
+	array[6]="Toshiba"
+	hostnames=$[ $RANDOM % 7 ]
+	hostnamectl set-hostname ${array[$hostnames]}
+	/bin/echo -e "$BLUE Your computer hostname (logged by router/network) is now \e[1;31m${array[$hostnames]}\e[0m"
+	cookie="$(xauth list | awk '{print $NF}' | tail -n 1)"
+	rm -rf ~/.Xauthority;touch ~/.Xauthority;chown $USER .Xauthority
+	xauth add "${array[$hostnames]}/unix:0" MIT-MAGIC-COOKIE-1 $cookie
+}
+
 hightime=1200  			# highest number for timing randomizer (higher the number longer potential change
 lowtime=600    			# lowest number (lower the number, lower potential time changed)
-wifi=wlan0
+wifi=wlan0				# set your wifi device here
 oui_file=/usr/share/anonsurf/OUI.final	# full path to OUI.final file here required for valid mac randomization generation
 
 while :
@@ -35,19 +55,7 @@ do
 	/bin/echo -e "$BLUE Changing MAC to: \e[1;31m$mac\e[0m"
 	ip link set dev $wifi down;ip link set dev $wifi address $mac;ip link set dev $wifi up;
 	sleep 1
-
-	array[0]="localhost" 
-	array[1]="laptop" 
-	array[2]="computer" 
-	array[3]="DESKTOP" 
-	array[4]="Apple" 
-	array[5]="PC" 
-	array[6]="Toshiba"
-	hostnames=$[ $RANDOM % 7 ]
-	#echo ${array[$hostnames]}
-	hostnamectl set-hostname ${array[$hostnames]}
-	/bin/echo -e "$BLUE Your computer hostname (logged by router/network) is now \e[1;31m${array[$hostnames]}\e[0m"
-
+	hostn
 	echo ""
 	/bin/echo -e "$BLUE next change: random times, random addresses in: $RED $rando$BLUE sec"
 	sleep $rando
