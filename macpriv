@@ -1,11 +1,7 @@
 #!/bin/bash
 # Part of righttoprivacy@tutanota.com's Parrot AnonSurf fork:
 # download: https://github.com/RightToPrivacy/anonsurf-1
-# 
-# ***IMPORTANT REQUIRED FOR USE: move OUI.final to /usr/share/maccleaner 
-# (or change variable to location of OUI.final)
-# README for more info
-#
+
 # runs great on any Linux system;
 # In Anonsurf fork changing $MAC_CHANGING var to 'yes' in anonsurf script
 # enables this script;
@@ -17,7 +13,7 @@
 # Randomized mac addresses at randomized continually changing times to protect 
 # against mac fingerprint/mac change changes hostname to randomized name each 
 # mac change (logged by routers/networks) to prevent timing pattern analysis and 
-# browser exploits known to target mac addresses/hostname 
+# tor browser exploits known to target mac addresses/hostname (javascript)
 
 export BLUE='\033[1;94m'
 export RED='\033[1;91m'
@@ -34,15 +30,16 @@ hostn() {
 	hostnames=$[ $RANDOM % 7 ]
 	hostnamectl set-hostname ${array[$hostnames]}
 	/bin/echo -e "$BLUE Your computer hostname (logged by router/network) is now \e[1;31m${array[$hostnames]}\e[0m"
+	# ensure GUI apps do not fail to connect to X server
 	cookie="$(xauth list | awk '{print $NF}' | tail -n 1)"
-	rm -rf ~/.Xauthority;touch ~/.Xauthority;chown $USER .Xauthority
 	xauth add "${array[$hostnames]}/unix:0" MIT-MAGIC-COOKIE-1 $cookie
+	chown $USER /home/$USER/.Xauthority
 }
 
 hightime=1200  			# highest number for timing randomizer (higher the number longer potential change
 lowtime=600    			# lowest number (lower the number, lower potential time changed)
 wifi=wlan0				# set your wifi device here
-oui_file=/usr/share/anonsurf/OUI.final	# full path to OUI.final file here required for valid mac randomization generation
+oui_file=/usr/share/maccleaner/OUI.final	# full path to OUI.final file here required for valid mac randomization generation
 
 while :
 do
