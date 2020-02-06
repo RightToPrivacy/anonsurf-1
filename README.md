@@ -1,5 +1,12 @@
 Parrot Linux Anonsurf fork finished by righttoprivacy@tutanota.com
 -------------------------------------------------------------------
+***READ IMPORTANT:
+***NOTE: Run This Anonsurf command With 'sudo' NOT logged in as root (part of it depends on username)
+***working on workaround***
+
+***hostname randomizer is work in progress so add to systemd at your own risk. Should be refined this week 
+***I will update this README as changes are made.
+
 HOWTO: To install & enable everything (patching your current Anonsurf with this version's features: replaces your current /usr/bin/anonsurf, installs macpriv) (hostname/mac address privacy feature random cycling), installs as systemd service (starts anonsurf systemd/enables at boot):
 If you want the above to happen just type: make install
 
