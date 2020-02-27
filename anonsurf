@@ -18,7 +18,12 @@
 # Extended:
 # Daniel 'Sawyer' Garcia <dagaba13@gmail.com>
 #
-# Optional MAC address/hostname changing stuff <righttoprivacy@tutanota.com>
+# Addons fork <righttoprivacy@tutanota.com>:
+# Changes/adds from original in this Anonsurf fork: 
+# * continually changing mac randomization changing times/addresses; 
+# * sets randomized hostname on network upon starting Anonsurf
+# * Anonsurf as systemd service (optional); 
+# * default setting of OpenNIC DNS (that resets on stop)
 #
 # anonsurf is free software: you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -40,6 +45,8 @@ export GREEN='\033[1;92m'
 export RED='\033[1;91m'
 export RESETCOLOR='\033[1;00m'
 
+# Save original hostname for later use
+hostname="$(hostname)"
 
 # Destinations you don't want routed through Tor
 TOR_EXCLUDE="192.168.0.0/16 172.16.0.0/12 10.0.0.0/8"
@@ -105,7 +112,7 @@ function start {
 		# start mac randomization random changing times @random changing addresses
 		# change hostname to generic "Computer" to blend in LANs/networks you connect to directly
 		echo -e -n "\n $GREEN*$BLUE Changing MAC addresses random times, random addresses"
-		echo -e -n "\n $GREEN*$BLUE Changing hostname to Computer"
+		echo -e -n "\n $GREEN*$BLUE Changes hostname"
 		/usr/bin/macpriv &2> /dev/null
 	fi
 
@@ -179,6 +186,7 @@ function start {
 	echo -e "$GREEN[$BLUE i$GREEN ]$BLUE You are under AnonSurf tunnel$RESETCOLOR\n"
 	notify "Global Anonymous Proxy Activated"
 	sleep 1
+	dnsstart		# OpenNIC DNS default
 	notify "Dance like no one's watching. Encrypt like everyone is :)"
 	sleep 10
 }
@@ -206,8 +214,7 @@ function stop {
 		echo -e "\n $GREEN*$BLUE Iptables rules restored"
 	fi
 	echo -e -n "\n $GREEN*$BLUE Restore DNS service"
-	rm /etc/resolv.conf || true
-	ln -s /etc/resolvconf/run/resolv.conf /etc/resolv.conf || true
+	dnsstop
 
 	# re-enable ipv6
 	/sbin/sysctl -w net.ipv6.conf.all.disable_ipv6=0
@@ -225,13 +232,15 @@ function stop {
 	sleep 1
 	
 if [ $MAC_CHANGING = "yes" ]; then
-	# change hostname back to Parrot
-	echo -e " $GREEN*$BLUE Hostname changed back to Parrot\n"
-	hostnamectl set-hostname Parrot	
 	# kill macpriv processes to stop continual mac changes
-	echo -e " $GREEN*$BLUE Killing mac changing processes\n"
-	killall -9 sleep
-	killall -9 macpriv
+        echo -e " $GREEN*$BLUE Killing mac changing processes\n"
+        killall -9 sleep
+        killall -9 macpriv
+
+	# change hostname back to Original
+	echo -e " $GREEN*$BLUE Hostname changed back to $hostname\n"
+	hostname $hostname
+
 fi
 	
 
@@ -324,7 +333,7 @@ Parrot AnonSurf Module (v 2.10)
 		     Francesco \"Mibofra\" Bonanno <mibofra@parrotsec.org>
 		and a huge amount of Caffeine + some GNU/GPL v3 stuff
 	Extended by Daniel \"Sawyer\" Garcia <dagaba13@gmail.com>
-					mac/hostname stuff <righttoprivacy@tutanota.com>
+			Added mac/hostname randomization stuff <righttoprivacy@tutanota.com>
 
 	Usage:
 	$RED┌──[$GREEN$USER$YELLOW@$BLUE`hostname`$RED]─[$GREEN$PWD$RED]
