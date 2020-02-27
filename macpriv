@@ -28,18 +28,15 @@ hostn() {
 	array[5]="PC" 
 	array[6]="Toshiba"
 	hostnames=$[ $RANDOM % 7 ]
-	hostnamectl set-hostname ${array[$hostnames]}
+	hostname ${array[$hostnames]}'-'$RANDOM
 	/bin/echo -e "$BLUE Your computer hostname (logged by router/network) is now \e[1;31m${array[$hostnames]}\e[0m"
-	# ensure GUI apps do not fail to connect to X server
-	cookie="$(xauth list | awk '{print $NF}' | tail -n 1)"
-	xauth add "${array[$hostnames]}/unix:0" MIT-MAGIC-COOKIE-1 $cookie
-	chown $USER /home/$USER/.Xauthority
 }
 
 hightime=1200  			# highest number for timing randomizer (higher the number longer potential change
 lowtime=600    			# lowest number (lower the number, lower potential time changed)
 wifi=wlan0				# set your wifi device here
 oui_file=/usr/share/maccleaner/OUI.final	# full path to OUI.final file here required for valid mac randomization generation
+hostn
 
 while :
 do
@@ -52,7 +49,6 @@ do
 	/bin/echo -e "$BLUE Changing MAC to: \e[1;31m$mac\e[0m"
 	ip link set dev $wifi down;ip link set dev $wifi address $mac;ip link set dev $wifi up;
 	sleep 1
-	hostn
 	echo ""
 	/bin/echo -e "$BLUE next change: random times, random addresses in: $RED $rando$BLUE sec"
 	sleep $rando
