@@ -18,12 +18,10 @@
 # Extended:
 # Daniel 'Sawyer' Garcia <dagaba13@gmail.com>
 #
-# Addons fork <righttoprivacy@tutanota.com>:
-# Changes/adds from original in this Anonsurf fork: 
-# * continually changing mac randomization changing times/addresses; 
+# <righttoprivacy@tutanota.com> main additions in this fork:
+# * added macpriv script/concept into anonsurf start function 
+#	(continual changing mac randomization changing times/addresses) 
 # * sets randomized hostname on network upon starting Anonsurf
-# * Anonsurf as systemd service (optional); 
-# * default setting of OpenNIC DNS (that resets on stop)
 #
 # anonsurf is free software: you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -45,8 +43,7 @@ export GREEN='\033[1;92m'
 export RED='\033[1;91m'
 export RESETCOLOR='\033[1;00m'
 
-# Save original hostname for later use
-hostname="$(hostname)"
+
 
 # Destinations you don't want routed through Tor
 TOR_EXCLUDE="192.168.0.0/16 172.16.0.0/12 10.0.0.0/8"
@@ -57,9 +54,6 @@ TOR_UID="debian-tor"
 
 # Tor's TransPort
 TOR_PORT="9040"
-
-# Do you want hostname/extra MAC randomization random times/addresses enabled: yes/no?
-MAC_CHANGING="yes"
 
 
 function notify {
@@ -83,18 +77,62 @@ function init {
 }
 
 
-function ip {
+#function ip {
+#
+#	MYIP=`wget -qO- https://start.parrotsec.org/ip/`
+#	echo -e "\nMy ip is:\n"
+#	echo $MYIP
+#	echo -e "\n"
+#	notify "My IP is:\n\n$MYIP"
+#}
 
-	MYIP=`wget -qO- https://start.parrotsec.org/ip/`
-	echo -e "\nMy ip is:\n"
-	echo $MYIP
-	echo -e "\n"
-	notify "My IP is:\n\n$MYIP"
+function macpriv {
+	
+	hostn() {
+		array[0]="localhost" 
+		array[1]="laptop" 
+		array[2]="computer" 
+		array[3]="DESKTOP" 
+		array[4]="Apple" 
+		array[5]="PC" 
+		array[6]="Toshiba"
+		hostbase=$[ $RANDOM % 7 ]
+        randhostname=${array[$hostbase]}'-'$RANDOM
+        /bin/echo -e "$BLUE Your new computer hostname (logged by router/network) is now \e[1;31m$randhostname"
+
+	}
+
+	netdev="$(nmcli dev status | awk '/ connected/' |awk '{print $1;}')"
+	hightime=1200  			# highest number for timing randomizer (higher the number longer potential change
+	lowtime=600    			# lowest number (lower the number, lower potential time changed)
+	wifi=wlan0				# set your wifi device here
+	oui_file=/usr/share/maccleaner/OUI.final	# full path to OUI.final file here required for valid mac randomization generation
+	hostn
+
+	while :
+	do
+		hexchar="ABCDEF0123456789"
+		beg=$(shuf -n 1 $oui_file)	# $oui_file contains important info to generate valid random macs: make sure it is in your path
+		end=$( for i in {1..6} ; do echo -n ${hexchar:$(( $RANDOM % 16 )):1} ; done | sed -e 's/\(..\)/:\1/g' )
+		mac=$beg$end
+		rando=$((RANDOM%$hightime+$lowtime))
+		/bin/echo -e "\e[1;37mghosting MAC/device name\e[0m: $BLUE random times at random addresses '(MAC address in privacy mode)'"
+		/bin/echo -e "$BLUE Changing MAC to: \e[1;31m$mac\e[0m"
+		ip link set dev $netdev down;ip link set dev $netdev address $mac;ip link set dev $netdev up;
+		sleep 1
+		echo ""
+		/bin/echo -e "$BLUE next change: random times, random addresses in: $RED $rando$BLUE sec"
+		sleep $rando
+	done
+
 }
 
 # Start Anonsurf
 function start {
-
+	
+	hostname="$(hostname)"	
+	macpriv &
+	sleep 1
 	# Make sure tor service isn't already running
 	if service tor status >&/dev/null; then  
 		echo -e -e "\n$GREEN[$RED!$GREEN] $RED $ME TOR INSTANCE RUNNING ALREADY! EXITING$RESETCOLOR\n" >&2
@@ -108,13 +146,6 @@ function start {
 
 	echo -e "\n$GREEN[$BLUE i$GREEN ]$BLUE Starting anonymous mode:$RESETCOLOR\n"
 
-	if [ $MAC_CHANGING = "yes" ]; then
-		# start mac randomization random changing times @random changing addresses
-		# change hostname to generic "Computer" to blend in LANs/networks you connect to directly
-		echo -e -n "\n $GREEN*$BLUE Changing MAC addresses random times, random addresses"
-		echo -e -n "\n $GREEN*$BLUE Changes hostname"
-		/usr/bin/macpriv &2> /dev/null
-	fi
 
 	if [ ! -e /tmp/tor.pid ]; then
 		echo -e " $RED*$BLUE Tor is not running! $GREEN starting it $BLUE for you" >&2
@@ -231,17 +262,14 @@ function stop {
 	echo -e " $GREEN*$BLUE It is safe to not worry for dnsmasq and nscd start errors if they are not installed or started already."
 	sleep 1
 	
-if [ $MAC_CHANGING = "yes" ]; then
-	# kill macpriv processes to stop continual mac changes
-        echo -e " $GREEN*$BLUE Killing mac changing processes\n"
-        killall -9 sleep
-        killall -9 macpriv
+	# kill bg processes
+    echo -e " $GREEN*$BLUE Killing mac changing processes\n"
+    killall -9 sleep
+    killall -9 anonsurf
 
 	# change hostname back to Original
 	echo -e " $GREEN*$BLUE Hostname changed back to $hostname\n"
 	hostname $hostname
-
-fi
 	
 
 
@@ -333,7 +361,7 @@ Parrot AnonSurf Module (v 2.10)
 		     Francesco \"Mibofra\" Bonanno <mibofra@parrotsec.org>
 		and a huge amount of Caffeine + some GNU/GPL v3 stuff
 	Extended by Daniel \"Sawyer\" Garcia <dagaba13@gmail.com>
-			Added mac/hostname randomization stuff <righttoprivacy@tutanota.com>
+	Hostname change/MAC address continual randomization (times/addresses) <righttoprivacy@tutanota.com>
 
 	Usage:
 	$RED┌──[$GREEN$USER$YELLOW@$BLUE`hostname`$RED]─[$GREEN$PWD$RED]
