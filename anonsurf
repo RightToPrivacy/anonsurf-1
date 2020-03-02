@@ -19,7 +19,7 @@
 # Daniel 'Sawyer' Garcia <dagaba13@gmail.com>
 #
 # <righttoprivacy@tutanota.com> this fork main changes:
-# * added my macpriv concept into anonsurf start function 
+# * added macpriv concept into anonsurf start function 
 #	(continual changing mac randomization changing times/addresses) 
 # * sets randomized hostname on network upon starting Anonsurf
 #
