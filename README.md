@@ -1,4 +1,4 @@
-Parrot Linux Anonsurf fork finished by righttoprivacy@tutanota.com
+Parrot Linux Anonsurf fork <righttoprivacy@tutanota.com>
 -------------------------------------------------------------------
 
 ### HOWTO: To install/enable everything (patching your current Anonsurf with this version's features: replaces current /usr/bin/anonsurf) (adds hostname/mac address privacy function random cycling)
