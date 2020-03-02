@@ -93,9 +93,9 @@ function macpriv {
 	}
 
 	netdev="$(nmcli dev status | awk '/ connected/' |awk '{print $1;}' | grep -v 'bridge' | grep -v 'tun')"
-	hightime=1200  			# highest number for timing randomizer (higher the number longer potential change
-	lowtime=600    			# lowest number (lower the number, lower potential time changed)
-	oui_file=/usr/share/maccleaner/OUI.final	# full path to OUI.final file here required for valid mac randomization generation
+	hightime=1200  				# highest number for timing randomizer (higher the number longer potential change
+	lowtime=600    				# lowest number (lower the number, lower potential time changed)
+	oui_file=/etc/anonsurf/OUI.final	# full path to OUI.final file here required for valid mac randomization generation
 	hostn
 
 	while :
