@@ -18,8 +18,8 @@
 # Extended:
 # Daniel 'Sawyer' Garcia <dagaba13@gmail.com>
 #
-# <righttoprivacy@tutanota.com> main additions in this fork:
-# * added macpriv script/concept into anonsurf start function 
+# <righttoprivacy@tutanota.com> this fork main changes:
+# * added my macpriv concept into anonsurf start function 
 #	(continual changing mac randomization changing times/addresses) 
 # * sets randomized hostname on network upon starting Anonsurf
 #
@@ -76,16 +76,6 @@ function init {
 	notify "Cache cleaned"
 }
 
-
-#function ip {
-#
-#	MYIP=`wget -qO- https://start.parrotsec.org/ip/`
-#	echo -e "\nMy ip is:\n"
-#	echo $MYIP
-#	echo -e "\n"
-#	notify "My IP is:\n\n$MYIP"
-#}
-
 function macpriv {
 	
 	hostn() {
@@ -102,10 +92,9 @@ function macpriv {
 
 	}
 
-	netdev="$(nmcli dev status | awk '/ connected/' |awk '{print $1;}')"
+	netdev="$(nmcli dev status | awk '/ connected/' |awk '{print $1;}' | grep -v 'bridge' | grep -v 'tunnel')"
 	hightime=1200  			# highest number for timing randomizer (higher the number longer potential change
 	lowtime=600    			# lowest number (lower the number, lower potential time changed)
-	wifi=wlan0				# set your wifi device here
 	oui_file=/usr/share/maccleaner/OUI.final	# full path to OUI.final file here required for valid mac randomization generation
 	hostn
 
@@ -361,7 +350,7 @@ Parrot AnonSurf Module (v 2.10)
 		     Francesco \"Mibofra\" Bonanno <mibofra@parrotsec.org>
 		and a huge amount of Caffeine + some GNU/GPL v3 stuff
 	Extended by Daniel \"Sawyer\" Garcia <dagaba13@gmail.com>
-	Hostname change/MAC address continual randomization (times/addresses) <righttoprivacy@tutanota.com>
+	Hostname change/MAC address continual randomization <righttoprivacy@tutanota.com>
 
 	Usage:
 	$RED┌──[$GREEN$USER$YELLOW@$BLUE`hostname`$RED]─[$GREEN$PWD$RED]
