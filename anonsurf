@@ -87,8 +87,8 @@ function macpriv {
 		array[5]="PC" 
 		array[6]="Toshiba"
 		hostbase=$[ $RANDOM % 7 ]
-        randhostname=${array[$hostbase]}'-'$RANDOM
-        /bin/echo -e "$BLUE Your new computer hostname (logged by router/network) is now \e[1;31m$randhostname"
+        	randhostname=${array[$hostbase]}'-'$RANDOM
+        	/bin/echo -e "$BLUE Your new computer hostname (logged by router/network) is now \e[1;31m$randhostname"
 
 	}
 
@@ -119,6 +119,7 @@ function macpriv {
 # Start Anonsurf
 function start {
 	
+	# Save original hostname and start the macpriv/hostname randomization
 	hostname="$(hostname)"	
 	macpriv &
 	sleep 1
