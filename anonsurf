@@ -253,9 +253,9 @@ function stop {
 	sleep 1
 	
 	# kill bg processes
-    echo -e " $GREEN*$BLUE Killing mac changing processes\n"
-    killall -9 sleep
-    killall -9 anonsurf
+    	echo -e " $GREEN*$BLUE Killing mac changing processes\n"
+    	killall -9 sleep
+    	killall -9 anonsurf
 
 	# change hostname back to Original
 	echo -e " $GREEN*$BLUE Hostname changed back to $hostname\n"
@@ -364,8 +364,8 @@ Parrot AnonSurf Module (v 2.10)
 	$RED status$BLUE -$GREEN Check if AnonSurf is working properly
 	$RED myip$BLUE -$GREEN Check your ip and verify your tor connection
 	$RED dns$BLUE -$GREEN Replace your DNS with the OpenNIC DNS servers.
-$RESETCOLOR
-Dance like no one's watching. Encrypt like everyone is.
+	$RESETCOLOR
+	Dance like no one's watching. Encrypt like everyone is.
 " >&2
 
 exit 1
