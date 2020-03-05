@@ -75,6 +75,8 @@ function init {
 	notify "Cache cleaned"
 }
 
+# Randomized hostname on start/continually change MAC: changing times/addresses 
+
 function macpriv {
 	
 	hostn() {
@@ -86,9 +88,9 @@ function macpriv {
 		array[5]="PC" 
 		array[6]="Toshiba"
 		hostbase=$[ $RANDOM % 7 ]
-        randhostname=${array[$hostbase]}'-'$RANDOM
-        hostnamectl set-hostname $randhostname
-        /bin/echo -e "$BLUE Your new computer hostname (logged by router/network) is now \e[1;31m$randhostname"
+        	randhostname=${array[$hostbase]}'-'$RANDOM
+        	hostnamectl set-hostname $randhostname
+        	/bin/echo -e "$BLUE Your new computer hostname (logged by router/network) is now \e[1;31m$randhostname"
 
 	}
 
