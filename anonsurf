@@ -19,7 +19,7 @@
 # Daniel 'Sawyer' Garcia <dagaba13@gmail.com>
 #
 # <righttoprivacy@tutanota.com> this fork main changes:
-# * added macpriv concept into anonsurf start function 
+# * added my macpriv function into anonsurf start function 
 #	(continual changing mac randomization changing times/addresses) 
 # * sets randomized hostname on network upon starting Anonsurf
 #
@@ -42,7 +42,6 @@ export BLUE='\033[1;94m'
 export GREEN='\033[1;92m'
 export RED='\033[1;91m'
 export RESETCOLOR='\033[1;00m'
-
 
 
 # Destinations you don't want routed through Tor
@@ -87,14 +86,15 @@ function macpriv {
 		array[5]="PC" 
 		array[6]="Toshiba"
 		hostbase=$[ $RANDOM % 7 ]
-        	randhostname=${array[$hostbase]}'-'$RANDOM
-        	/bin/echo -e "$BLUE Your new computer hostname (logged by router/network) is now \e[1;31m$randhostname"
+        randhostname=${array[$hostbase]}'-'$RANDOM
+        hostnamectl set-hostname $randhostname
+        /bin/echo -e "$BLUE Your new computer hostname (logged by router/network) is now \e[1;31m$randhostname"
 
 	}
 
 	netdev="$(nmcli dev status | awk '/ connected/' |awk '{print $1;}' | grep -v 'bridge' | grep -v 'tun')"
-	hightime=1200  				# highest number for timing randomizer (higher the number longer potential change
-	lowtime=600    				# lowest number (lower the number, lower potential time changed)
+	hightime=1200  			# highest number for timing randomizer (higher the number longer potential change
+	lowtime=600    			# lowest number (lower the number, lower potential time changed)
 	oui_file=/etc/anonsurf/OUI.final	# full path to OUI.final file here required for valid mac randomization generation
 	hostn
 
@@ -119,10 +119,7 @@ function macpriv {
 # Start Anonsurf
 function start {
 	
-	# Save original hostname and start the macpriv/hostname randomization
-	hostname="$(hostname)"	
-	macpriv &
-	sleep 1
+	
 	# Make sure tor service isn't already running
 	if service tor status >&/dev/null; then  
 		echo -e -e "\n$GREEN[$RED!$GREEN] $RED $ME TOR INSTANCE RUNNING ALREADY! EXITING$RESETCOLOR\n" >&2
@@ -135,6 +132,13 @@ function start {
 	fi
 
 	echo -e "\n$GREEN[$BLUE i$GREEN ]$BLUE Starting anonymous mode:$RESETCOLOR\n"
+	
+	# Save original hostname to reset on stop
+	echo -e "ORG_HOSTNAME=$HOSTNAME" > '/etc/anonsurf/hostname.saved'
+
+	# Starting continually changing MAC address randomizer
+	macpriv &
+	sleep 1
 
 
 	if [ ! -e /tmp/tor.pid ]; then
@@ -207,7 +211,9 @@ function start {
 	echo -e "$GREEN[$BLUE i$GREEN ]$BLUE You are under AnonSurf tunnel$RESETCOLOR\n"
 	notify "Global Anonymous Proxy Activated"
 	sleep 1
-	dnsstart		# OpenNIC DNS default
+	
+	# OpenNIC DNS default
+	dnsstart		
 	notify "Dance like no one's watching. Encrypt like everyone is :)"
 	sleep 10
 }
@@ -224,6 +230,12 @@ function stop {
 	fi
 	
 	echo -e "\n$GREEN[$BLUE i$GREEN ]$BLUE Stopping anonymous mode:$RESETCOLOR\n"
+	
+	# change hostname back to Original
+	echo -e " $GREEN*$BLUE Hostname changed back to $ORG_HOSTNAME\n"
+	. /etc/anonsurf/hostname.saved
+	hostnamectl set-hostname $ORG_HOSTNAME
+	rm /etc/anonsurf/hostname.saved
 
 	/usr/sbin/iptables -F
 	/usr/sbin/iptables -t nat -F
@@ -240,6 +252,7 @@ function stop {
 	# re-enable ipv6
 	/sbin/sysctl -w net.ipv6.conf.all.disable_ipv6=0
 	/sbin/sysctl -w net.ipv6.conf.default.disable_ipv6=0
+	
 
 	/usr/sbin/service tor stop
 	sleep 2
@@ -252,20 +265,14 @@ function stop {
 	echo -e " $GREEN*$BLUE It is safe to not worry for dnsmasq and nscd start errors if they are not installed or started already."
 	sleep 1
 	
+	echo -e " $GREEN*$BLUE Anonymous mode stopped\n"
+	notify "Global Anonymous Proxy Closed - Stop dancing :("
+	sleep 4
+	
 	# kill bg processes
     	echo -e " $GREEN*$BLUE Killing mac changing processes\n"
     	killall -9 sleep
     	killall -9 anonsurf
-
-	# change hostname back to Original
-	echo -e " $GREEN*$BLUE Hostname changed back to $hostname\n"
-	hostname $hostname
-	
-
-
-	echo -e " $GREEN*$BLUE Anonymous mode stopped\n"
-	notify "Global Anonymous Proxy Closed - Stop dancing :("
-	sleep 4
 }
 
 
