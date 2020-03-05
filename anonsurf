@@ -234,11 +234,11 @@ function stop {
 	echo -e "\n$GREEN[$BLUE i$GREEN ]$BLUE Stopping anonymous mode:$RESETCOLOR\n"
 	
 	# change hostname back to Original
-	echo -e " $GREEN*$BLUE Hostname changed back to $ORG_HOSTNAME\n"
 	. /etc/anonsurf/hostname.saved
 	hostnamectl set-hostname $ORG_HOSTNAME
+	echo -e " $GREEN*$BLUE Hostname changed back to $ORG_HOSTNAME\n"
 	rm /etc/anonsurf/hostname.saved
-
+	
 	/usr/sbin/iptables -F
 	/usr/sbin/iptables -t nat -F
 	echo -e "\n $GREEN*$BLUE Deleted all iptables rules"
