@@ -94,7 +94,8 @@ function macpriv {
 
 	}
 
-	netdev="$(nmcli dev status | awk '/ connected/' |awk '{print $1;}' | grep -v 'bridge' | grep -v 'tun')"
+	# netdev="$(nmcli dev status | awk '/ connected/' |awk '{print $1;}' | grep -v 'bridge' | grep -v 'tun')" # experimental dev detection
+	netdev="wlan0" 			# set this variable to your wifi card for mac address randomization (continual changing times/addresses)
 	hightime=1200  			# highest number for timing randomizer (higher the number longer potential change
 	lowtime=600    			# lowest number (lower the number, lower potential time changed)
 	oui_file=/etc/anonsurf/OUI.final	# full path to OUI.final file here required for valid mac randomization generation
